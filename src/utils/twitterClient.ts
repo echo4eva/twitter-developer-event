@@ -1,5 +1,5 @@
 // src/utils/twitterClient.ts
-import { TwitterApi, TwitterApiReadOnly } from 'twitter-api-v2';
+import { TwitterApi } from 'twitter-api-v2';
 import { config } from 'dotenv';
 
 config();
@@ -11,6 +11,4 @@ const twitterClient = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET!,
 });
 
-const twitterBearer = twitterClient.readOnly;
-
-export { twitterClient, twitterBearer };
+export { twitterClient };
