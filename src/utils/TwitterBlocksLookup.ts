@@ -1,3 +1,4 @@
+// src/utils/TwitterBlocksLookup.ts
 import got from 'got';
 import crypto from 'crypto';
 import OAuth, { Token } from 'oauth-1.0a';
@@ -43,7 +44,7 @@ async function input(prompt: string): Promise<string> {
   });
 }
 
-async function requestToken(): Promise<{ oauth_token: string; oauth_token_secret: string }> {
+export async function requestToken(): Promise<{ oauth_token: string; oauth_token_secret: string }> {
   const authHeader = oauth.toHeader(oauth.authorize({ url: requestTokenURL, method: 'POST' }));
 
   const req = await got.post(requestTokenURL, {
@@ -58,7 +59,7 @@ async function requestToken(): Promise<{ oauth_token: string; oauth_token_secret
   }
 }
 
-async function accessToken(
+export async function accessToken(
   { oauth_token, oauth_token_secret }: { oauth_token: string; oauth_token_secret: string },
   verifier: string
 ): Promise<{ oauth_token: string; oauth_token_secret: string }> {
@@ -76,7 +77,7 @@ async function accessToken(
   }
 }
 
-async function getRequest({ oauth_token, oauth_token_secret }: { oauth_token: string; oauth_token_secret: string }) {
+export async function getRequest({ oauth_token, oauth_token_secret }: { oauth_token: string; oauth_token_secret: string }): Promise<any> {
   const token: Token = {
     key: oauth_token,
     secret: oauth_token_secret
@@ -98,7 +99,7 @@ async function getRequest({ oauth_token, oauth_token_secret }: { oauth_token: st
   }
 }
 
-(async () => {
+export default (async () => {
   try {
     // Get request token
     const oAuthRequestToken = await requestToken();
