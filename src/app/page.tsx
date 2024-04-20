@@ -1,8 +1,7 @@
-// src/pages/page.tsx
-import React from 'react';
-import TwitterBlocksLookup from '../components/LookupBlocked';
+// src/app/page.tsx
+import TwitterBlocksLookup  from '@/components/LookupBlocked';
 
-const Page = () => {
+export default function Page() {
   const userId = process.env.USER_ID;
 
   return (
@@ -15,6 +14,4 @@ const Page = () => {
       )}
     </div>
   );
-};
-
-export default Page;
+}

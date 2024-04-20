@@ -1,62 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { requestToken, accessToken, getRequest } from '../utils/TwitterBlocksLookup';
+// src/components/LookupBlocked.tsx
+"use client";
+
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import BlockedUsersList from "@/components/BlockedUsersList";
+import { twitterClient } from "@/utils/twitterClient";
+
+interface BlockedUser {
+  id: string;
+  name: string;
+  username: string;
+}
 
 interface TwitterBlocksLookupProps {
   userId: string;
 }
 
-const TwitterBlocksLookup: React.FC<TwitterBlocksLookupProps> = ({ userId }) => {
-  const [oAuthRequestToken, setOAuthRequestToken] = useState<{
-    oauth_token: string;
-    oauth_token_secret: string;
-  } | null>(null);
-  const [oAuthAccessToken, setOAuthAccessToken] = useState<{
-    oauth_token: string;
-    oauth_token_secret: string;
-  } | null>(null);
-  const [blockedUsers, setBlockedUsers] = useState<any[] | null>(null);
+export default function TwitterBlocksLookup({ userId }: TwitterBlocksLookupProps) {
+  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
 
-  useEffect(() => {
-    const fetchBlockedUsers = async () => {
-      try {
-        // Get request token
-        const requestTokenResponse = await requestToken();
-        setOAuthRequestToken(requestTokenResponse);
-
-        // Get authorization
-        const authorizeURL = new URL('https://api.twitter.com/oauth/authorize');
-        authorizeURL.searchParams.append('oauth_token', requestTokenResponse.oauth_token);
-        window.open(authorizeURL.href, '_blank');
-
-        // Get the access token
-        const pin = prompt('Paste the PIN here:');
-        const accessTokenResponse = await accessToken(requestTokenResponse, pin!.trim());
-        setOAuthAccessToken(accessTokenResponse);
-
-        // Make the request
-        const response = await getRequest(accessTokenResponse);
-        setBlockedUsers(response.data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    fetchBlockedUsers();
-  }, [userId]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // Get the blocked users
+      const response = await twitterClient.v2.getUsersBlocked(userId);
+      setBlockedUsers(response.data.map((user) => ({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+      })));
+    } catch (e) {
+      console.error('Error:', e);
+    }
+  };
 
   return (
     <div>
-      {blockedUsers ? (
-        <ul>
-          {blockedUsers.map((user) => (
-            <li key={user.id}>{user.username}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>Loading...</p>
-      )}
+      <form onSubmit={handleSubmit}>
+        <Button
+          type="submit"
+          variant="outline"
+          className={buttonVariants({ variant: "outline", className: "hover:bg-gray-100 dark:hover:bg-gray-800" })}
+        >
+          Get Blocked Users
+        </Button>
+      </form>
+
+      <BlockedUsersList blockedUsers={blockedUsers} />
     </div>
   );
-};
-
-export default TwitterBlocksLookup;
+}

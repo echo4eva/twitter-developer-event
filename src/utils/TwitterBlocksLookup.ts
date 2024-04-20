@@ -1,21 +1,22 @@
 // src/utils/TwitterBlocksLookup.ts
-import got from 'got';
 import crypto from 'crypto';
 import OAuth, { Token } from 'oauth-1.0a';
 import qs from 'querystring';
-import readline from 'readline';
+
+export type BlockedUser = {
+  ids: string;
+  name: string;
+  username: string;
+};
 
 // The code below sets the consumer key and consumer secret from your environment variables
 // To set environment variables on macOS or Linux, run the export commands below from the terminal:
 // export CONSUMER_KEY='YOUR-KEY'
 // export CONSUMER_SECRET='YOUR-SECRET'
 const consumer_key = process.env.CONSUMER_KEY;
+console.log('Consumer key:', consumer_key);
 const consumer_secret = process.env.CONSUMER_SECRET;
-
-// Be sure to replace your-user-id with your own user ID or one of an authenticated user
-// You can find a user ID by using the user lookup endpoint
-const id = process.env.USER_ID;
-const endpointURL = `https://api.twitter.com/2/users/${id}/blocking`;
+console.log('Consumer secret:', consumer_secret);
 
 // this example uses PIN-based OAuth to authorize the user
 const requestTokenURL = 'https://api.twitter.com/oauth/request_token?oauth_callback=oob';
@@ -30,31 +31,23 @@ const oauth = new OAuth({
     hash_function: (baseString, key) => crypto.createHmac('sha1', key).update(baseString).digest('base64')
   });
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-async function input(prompt: string): Promise<string> {
-  return new Promise((resolve) => {
-    rl.question(prompt, (out) => {
-      rl.close();
-      resolve(out);
-    });
-  });
-}
-
 export async function requestToken(): Promise<{ oauth_token: string; oauth_token_secret: string }> {
+  console.log('Requesting OAuth request token...');
   const authHeader = oauth.toHeader(oauth.authorize({ url: requestTokenURL, method: 'POST' }));
 
-  const req = await got.post(requestTokenURL, {
+  const response = await fetch(requestTokenURL, {
+    method: 'POST',
     headers: {
-      Authorization: authHeader['Authorization']
+      'Authorization': authHeader['Authorization']
     }
   });
-  if (req.body) {
-    return qs.parse(req.body) as { oauth_token: string; oauth_token_secret: string };
+
+  if (response.ok) {
+    const data = await response.text();
+    console.log('Received OAuth request token:', data);
+    return qs.parse(data) as { oauth_token: string; oauth_token_secret: string };
   } else {
+    console.error('Error getting OAuth request token:', response.status, response.statusText);
     throw new Error('Cannot get an OAuth request token');
   }
 }
@@ -63,58 +56,49 @@ export async function accessToken(
   { oauth_token, oauth_token_secret }: { oauth_token: string; oauth_token_secret: string },
   verifier: string
 ): Promise<{ oauth_token: string; oauth_token_secret: string }> {
+  console.log('Requesting OAuth access token...');
   const authHeader = oauth.toHeader(oauth.authorize({ url: accessTokenURL, method: 'POST' }));
   const path = `https://api.twitter.com/oauth/access_token?oauth_verifier=${verifier}&oauth_token=${oauth_token}`;
-  const req = await got.post(path, {
+
+  const response = await fetch(path, {
+    method: 'POST',
     headers: {
-      Authorization: authHeader['Authorization']
+      'Authorization': authHeader['Authorization']
     }
   });
-  if (req.body) {
-    return qs.parse(req.body) as { oauth_token: string; oauth_token_secret: string };
+
+  if (response.ok) {
+    const data = await response.text();
+    console.log('Received OAuth access token:', data);
+    return qs.parse(data) as { oauth_token: string; oauth_token_secret: string };
   } else {
+    console.error('Error getting OAuth access token:', response.status, response.statusText);
     throw new Error('Cannot get an OAuth request token');
   }
 }
 
-export async function getRequest({ oauth_token, oauth_token_secret }: { oauth_token: string; oauth_token_secret: string }): Promise<any> {
+export async function getRequest({ oauth_token, oauth_token_secret, userId }: { oauth_token: string; oauth_token_secret: string; userId: string }): Promise<any> {
+  console.log('Making API request...');
   const token: Token = {
     key: oauth_token,
     secret: oauth_token_secret
   };
 
+  const endpointURL = `https://api.twitter.com/2/users/${userId}/blocking`;
   const authHeader = oauth.toHeader(oauth.authorize({ url: endpointURL, method: 'GET' }, token));
 
-  const req = await got.get(endpointURL, {
-    responseType: 'json',
+  const response = await fetch(endpointURL, {
     headers: {
-      Authorization: authHeader['Authorization'],
+      'Authorization': authHeader['Authorization'],
       'user-agent': 'v2BlocksLookupJS'
     }
   });
-  if (req.body) {
-    return req.body;
+
+  if (response.ok) {
+    console.log('API request successful:', await response.json());
+    return await response.json();
   } else {
+    console.error('Error making API request:', response.status, response.statusText);
     throw new Error('Unsuccessful request');
   }
 }
-
-export default (async () => {
-  try {
-    // Get request token
-    const oAuthRequestToken = await requestToken();
-    // Get authorization
-    authorizeURL.searchParams.append('oauth_token', oAuthRequestToken.oauth_token);
-    console.log('Please go here and authorize:', authorizeURL.href);
-    const pin = await input('Paste the PIN here: ');
-    // Get the access token
-    const oAuthAccessToken = await accessToken(oAuthRequestToken, pin.trim());
-    // Make the request
-    const response = await getRequest(oAuthAccessToken);
-    console.dir(response, { depth: null });
-  } catch (e) {
-    console.log(e);
-    process.exit(-1);
-  }
-  process.exit();
-})();
