@@ -9,7 +9,7 @@ from functions.get_users.index import get_users
 from functions.post.index import create_tweet
 import os
 
-from events import message_received, message_sent
+from api._backend.events import message_received, message_sent
 
 app = Flask(__name__)
 
