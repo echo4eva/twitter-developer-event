@@ -2,15 +2,35 @@
 from flask import Flask, send_file, jsonify
 from functions.blocked.index import get_blocked_users
 from functions.followers.index import get_followers
+from functions.block.index import block_users
+from functions.delete.index import delete_tweet
 import os
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
   return 'Hello, World!'
 
+# maybe try <term> = "grok"? test cuz spammed before
+# <user> = twitter @ or id? idk
+@app.route('/search/<user>/<term>')
+
+
+
+@app.route("/followers/<user_id>")
+def see_followers(user_id):
+  response = get_followers(user_id)
+  return response
+
+# 1781848699141767676, deleted
+# "you are unauth to delete this tweet"
+# changed keys to mine, works: **tokens + client id same acc**
+# 1781848551867236805, deleted
+@app.route("/delete_tweet/<tweet_id>")
+def delete_tweets(tweet_id):
+  response = delete_tweet(tweet_id)
+  return response
 
 @app.route('/blocked_users')
 def download_blocked_users():
@@ -32,15 +52,6 @@ def download_blocked_users():
                    as_attachment=True,
                    download_name='blocked_users.json')
 
-@app.route('/followers')
-def followers():
-  response = get_followers("44196397")
-  print(response)
-  return response
-
-@app.route('/creds')
-def creds():
-  
 
 if __name__ == '__main__':
   app.run(debug=True)
