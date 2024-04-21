@@ -1,15 +1,36 @@
-import { NextPage } from 'next';
-import Head from 'next/head';
+// app/page.tsx
+"use client"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const Page: NextPage = () => {
+export default function TwitterUserPage() {
   return (
     <div>
-      <Head>
-        <title>My Page</title>
-      </Head>
-      <h1>Welcome to my page!</h1>
+      <h1>Twitter User Search</h1>
+      <SearchForm />
     </div>
   );
-};
+}
 
-export default Page;
+function SearchForm() {
+  const [username, setUsername] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const searchParams = new URLSearchParams({ username });
+    router.push(`/twitter-user?${searchParams}`);
+  };
+
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="username" placeholder="Enter Twitter username" value={username} onChange={handleUsernameChange} />
+      <button type="submit">Search</button>
+    </form>
+  );
+}

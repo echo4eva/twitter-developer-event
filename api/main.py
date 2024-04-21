@@ -1,67 +1,35 @@
-import tweepy
-from auth.client import twitter
-from functions.blocked.index import get_blocked_users
-from functions.block.index import block_users
-from typing import Any
+import asyncio
+from fastapi import FastAPI, Query
+from grok.grokwrap import GrokWrapper as ChatGrokWrapper
+from grok.grok_single_question import GrokWrapper as QuestionGrokWrapper
 
-# from functions.blocked.index import get_blocked_users
-# import os
-# from flask import Flask, send_file, jsonify
+app = FastAPI()
 
-# app = Flask(__name__)
+@app.get("/")
+def root():
+    return {"message": "Welcome to the Grok API!"}
 
-# @app.route('/blocked_users')
-# def download_blocked_users():
-#     """
-#     Endpoint to download the list of blocked users as a JSON file.
+@app.api_route("/api/grok", methods=["GET", "POST"])
+async def grok_endpoint(
+    chat: bool = Query(True, description="Flag to enable chat mode"),
+    question: bool = Query(False, description="Flag to enable one-question mode"),
+    input_text: str = Query(..., description="Input text for the selected Grok method")
+):
+    if chat:
+        wrapper = ChatGrokWrapper()
+        response = await wrapper.chat(input_text)
+    elif question:
+        wrapper = QuestionGrokWrapper()
+        response = await wrapper.ask_question(input_text)
+    else:
+        return {"error": "Invalid mode. Please specify either chat or question mode."}
 
-#     Returns:
-#         A downloadable JSON file containing the list of blocked users.
-#     """
-#     blocked_users_json = get_blocked_users()
-#     file_path = 'blocked_users.json'
+    return {
+        "mode": "chat" if chat else "question",
+        "input": input_text,
+        "response": response
+    }
 
-#     # Save the JSON data to a file
-#     with open(file_path, 'w') as f:
-#         f.write(blocked_users_json)
-
-#     # Return the file as a downloadable response
-#     return send_file(file_path, as_attachment=True, download_name='blocked_users.json')
-
-# if __name__ == '__main__':
-#   app.run(debug=True)
-
-# def create_tweet(message: str) -> Any:
-#   """
-#     Creates a new tweet with the given message.
-
-#     Args:
-#         message (str): The text content of the tweet.
-
-#     Returns:
-#         Any: The response from the Twitter API.
-#     """
-#   response = twitter.create_tweet(text=message)
-#   return response
-
-
-# message: str = "grokaz!"
-# response: Any = create_tweet(message)
-# print("Tweeted: %s" % message)
-# print(f"https://twitter.com/user/status/{response.data['id']}")
-response = get_blocked_users()
-import json
-
-# Read the blocked_users.json file
-with open('blocked_users.json', 'r') as file:
-    blocked_users = json.load(file)
-
-# Access and use the blocked_users data
-for user in blocked_users:
-    print(f"User ID: {user['id']}")
-    print(f"Username: {user['username']}")
-    print(f"Name: {user['name']}")
-    print(f"Description: {user['description']}")
-    print("---")
-# response = block_users([""])
-print(response)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -6,19 +6,55 @@
 import { ResponsiveLine } from "@nivo/line";
 import type { LineProps } from "@nivo/line";
 import Link from "next/link";
-import data from "../../../public/data/bell.json";
+import { platform_tweets, distances, user_tweet, user_tweet_distance } from "../../../public/data/stefan.json";
 import visualizeText from "../../../public/data/visualizeText.json";
+import { useState, useEffect } from 'react';
+import { euclideanDistance } from './euclidean-distance';
 
-interface CurvedLineChartProps extends React.HTMLAttributes<HTMLDivElement> {}
+// Define the props for the CurvedLineChart component
+interface CurvedLineChartProps extends React.HTMLAttributes<HTMLDivElement> {
+  platformTweets: string[];
+  distances: number[];
+  userTweet: string;
+  userTweetDistance: number;
+}
 
+// Define the props for the ResponsiveLine component
 interface ResponsiveLineProps extends LineProps {
   useMesh?: boolean;
   gridYValues?: number;
 }
 
+// Render the CurvedLineChart component
 function CurvedLineChart(props: CurvedLineChartProps) {
+  const { platformTweets, distances, userTweet, userTweetDistance } = props;
+
+  // Configure the line chart props
   const lineChartProps: ResponsiveLineProps = {
-    data,
+    // This data object represents the data that will be displayed in the line chart
+    data: [
+      {
+        // The first line represents the "Platform Tweets"
+        id: "Platform Tweets",
+        data: platformTweets.map((tweet, index) => ({
+          // Each data point has an x-value (the tweet) and a y-value (the distance)
+          x: tweet,
+          y: distances[index],
+        })),
+      },
+      {
+        // The second line represents the "Your Tweet"
+        id: "Your Tweet",
+        data: [
+          {
+            // There is only one data point for the user's tweet, with the x-value being the tweet and the y-value being the distance
+            x: userTweet,
+            y: userTweetDistance,
+          },
+        ],
+      },
+    ],
+    // Additional configuration options for the line chart
     margin: { top: 10, right: 10, bottom: 40, left: 40 },
     xScale: {
       type: "point",
@@ -63,6 +99,7 @@ function CurvedLineChart(props: CurvedLineChartProps) {
     },
   };
 
+  // Render the ResponsiveLine component with the configured props
   return (
     <div {...props}>
       <ResponsiveLine {...lineChartProps} />
@@ -70,7 +107,41 @@ function CurvedLineChart(props: CurvedLineChartProps) {
   );
 }
 
+// Render the main component
 export default function Component() {
+  // Create a state variable to hold the user's input
+  const [userInput, setUserInput] = useState('');
+
+  // Call the findSimilarTweets function whenever the userInput state changes
+  useEffect(() => {
+    findSimilarTweets(userInput);
+  }, [userInput]);
+
+  // Implement the findSimilarTweets function
+  function findSimilarTweets(query: string) {
+    // Calculate the Euclidean distance between the query and each tweet
+    const similarities = platform_tweets.map(tweet => {
+      const queryVector = query.split(' ').map(word => 1);
+      const tweetVector = tweet.split(' ').map(word => 1);
+      return euclideanDistance(queryVector, tweetVector);
+    });
+
+    // Find the top 3 most similar tweets
+    const topTweets = platform_tweets.map((tweet, index) => ({
+      tweet,
+      similarity: similarities[index],
+    }))
+    .sort((a, b) => a.similarity - b.similarity)
+    .slice(0, 3);
+
+    // Display the top 3 similar tweets
+    console.log('Top 3 similar tweets:');
+    topTweets.forEach(({ tweet, similarity }) => {
+      console.log(`- ${tweet} (similarity: ${similarity.toFixed(2)})`);
+    });
+  }
+
+  // Render the main component
   return (
     <div
       key="1"
@@ -86,7 +157,22 @@ export default function Component() {
           </p>
         </div>
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
-          <CurvedLineChart className="aspect-[2/1] w-full" />
+          {/* Render the input field */}
+          <input
+            type="text"
+            placeholder="Enter a query"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {/* Render the CurvedLineChart component */}
+          <CurvedLineChart
+            className="aspect-[2/1] w-full"
+            platformTweets={platform_tweets}
+            distances={distances}
+            userTweet={user_tweet}
+            userTweetDistance={user_tweet_distance}
+          />
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {visualizeText.bellCurveText} population.
@@ -105,5 +191,3 @@ export default function Component() {
     </div>
   );
 }
-
-// i want to layer a background image
