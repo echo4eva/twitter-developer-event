@@ -1,6 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
 import type { LineProps } from "@nivo/line";
-import { euclideanDistance } from './euclidean-distance';
 import data from "../../../public/data/stefan.json";
 
 // Define the props for the CurvedLineChart component
