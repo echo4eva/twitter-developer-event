@@ -1,5 +1,6 @@
 from auth.client import twitter
 
+
 def get_users(user_ids):
     response = twitter.get_users(ids=user_ids,
                                  user_fields=["description"],
@@ -29,3 +30,15 @@ def get_users(user_ids):
 
     
     return user_info
+
+
+def get_bot_data(bot_user_ids):
+    descriptions = []
+    tweet_texts = []
+
+    for user_id in bot_user_ids:
+        user_info = get_users([user_id])
+        descriptions.append(user_info["description"])
+        tweet_texts.append(user_info["tweet_text"])
+
+    return descriptions, tweet_texts

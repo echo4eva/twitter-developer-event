@@ -16,4 +16,4 @@ data_file_path = 'twibot-22.csv'
 bot_ids = get_bot_user_ids(data_file_path)
 
 
-print(bot_ids)
+print(len(bot_ids))
