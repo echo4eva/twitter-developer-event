@@ -22,7 +22,7 @@ const SuccessfulCampaigns: React.FC = () => {
       <div className="container px-4 md:px-6">
         <div className="space-y-2 text-center">
           <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
-            Portfolio
+            NEW BOTS 
           </div>
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
             {portfolio.title}

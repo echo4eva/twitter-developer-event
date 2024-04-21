@@ -1,3 +1,4 @@
+
 // @/components/ContactUs.tsx
 "use client"
 import React, { useState } from 'react';
@@ -5,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import contactUsData from '../../public/html/contact.json';
 
 const ContactUs: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -31,10 +33,9 @@ const ContactUs: React.FC = () => {
       <div className="container px-4 md:px-6">
         <div className="space-y-2 text-center">
           <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">Contact Us</div>
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Get in Touch</h2>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{contactUsData.title}</h2>
           <p className="max-w-[700px] mx-auto text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            Ready to take your Twitter presence to new heights? Fill out the form below, and our team will get back
-            to you as soon as possible.
+            {contactUsData.description}
           </p>
         </div>
         <div className="mx-auto max-w-3xl py-12">
@@ -42,15 +43,36 @@ const ContactUs: React.FC = () => {
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <Label className="mb-2">Name</Label>
-                <Input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="𝕏 Developer Event Winners" required />
+                <Input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="𝕏 Developer Event Winners 🚀"
+                  required
+                />
               </div>
               <div>
                 <Label className="mb-2">Email</Label>
-                <Input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="elonmusk@𝕏.com" required />
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="elonmusk@𝕏.com"
+                  required
+                />
               </div>
               <div className="sm:col-span-2">
                 <Label className="mb-2">Message</Label>
-                <Textarea name="message" value={formData.message} onChange={handleInputChange} rows={4} placeholder="Type your message here..." required />
+                <Textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder="Type your message here..."
+                  required
+                />
               </div>
             </div>
             <div className="mt-6 flex justify-center">
