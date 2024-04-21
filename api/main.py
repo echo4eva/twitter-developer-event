@@ -20,6 +20,5 @@ def create_tweet(message: str) -> Any:
 # response: Any = create_tweet(message)
 # print("Tweeted: %s" % message)
 # print(f"https://twitter.com/user/status/{response.data['id']}")
-user_id = "1523879686178107392"
-response = get_blocked_users(user_id, max_results=50, user_fields="name,username")
+response = get_blocked_users()
 print(response)

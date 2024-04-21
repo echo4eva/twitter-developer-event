@@ -1,4 +1,5 @@
 # api/auth/bearer.py
+# needs corrections?
 import tweepy
 from dotenv import load_dotenv
 import os

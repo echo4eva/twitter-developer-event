@@ -1,30 +1,31 @@
-  # api/functions/blocked/index.py
+# api/functions/blocked/index.py
 from auth.client import twitter
 
-def get_blocked_users(user_id, max_results=100, pagination_token=None, user_fields=None, tweet_fields=None, expansions=None, **props):
-      """
-      Retrieves a list of users who are blocked by the specified user ID.
+def get_blocked_users():
+  response = twitter.get_blocked()
 
-      Args:
-          user_id (str): The user ID whose blocked users you would like to retrieve.
-          max_results (int, optional): The maximum number of results to be returned per page. Defaults to 100.
-          pagination_token (str, optional): Used to request the next page of results.
-          user_fields (str, optional): A comma-separated list of user fields to include in the response.
-          tweet_fields (str, optional): A comma-separated list of tweet fields to include in the response.
-          expansions (str, optional): A comma-separated list of expansions to include in the response.
-          **props (dict): Additional props passed from the parent component.
+  blocked_users = []
 
-      Returns:
-          dict: The response from the Twitter API.
-      """
-      params = {
-          "max_results": max_results,
-          "pagination_token": pagination_token,
-          "user.fields": user_fields,
-          "tweet.fields": tweet_fields,
-          "expansions": expansions
-      }
+  # list[each element is a dict]
+  for user in response.data:
+      blocked_users.append({
+          "id": user.id,
+          "username": user.username,
+          "name": user.name
+      })
 
-      response = twitter.get_blocked(user_id=user_id, **params)
-  
-      return response
+  next_token = response.meta.get('next_token')
+
+  # gets other page of blocked users
+  while next_token:
+      response = twitter.get_blocked(pagination_token=next_token)
+      for user in response.data:
+          blocked_users.append({
+              "id": user.id,
+              "username": user.username,
+              "name": user.name
+          })
+        
+      next_token = response.meta.get('next_token')
+
+  return blocked_users
