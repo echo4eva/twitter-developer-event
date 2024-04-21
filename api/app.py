@@ -4,6 +4,7 @@ from functions.blocked.index import get_blocked_users
 from functions.followers.index import get_followers
 from functions.block.index import block_users
 from functions.delete.index import delete_tweet
+from functions.get_users.index import get_users
 import os
 
 app = Flask(__name__)
@@ -28,6 +29,11 @@ def see_followers(user_id):
 @app.route("/delete_tweet/<tweet_id>")
 def delete_tweets(tweet_id):
   response = delete_tweet(tweet_id)
+  return response
+
+@app.route("/user/<user_id>")
+def get_user(user_id):
+  response = get_users(user_id)
   return response
 
 @app.route('/blocked_users')
