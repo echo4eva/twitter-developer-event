@@ -1,24 +1,23 @@
 [
-    {
-      "id": "Desktop",
-      "data": [
-        { "x": "Jan", "y": 43 },
-        { "x": "Feb", "y": 137 },
-        { "x": "Mar", "y": 61 },
-        { "x": "Apr", "y": 145 },
-        { "x": "May", "y": 26 },
-        { "x": "Jun", "y": 154 }
-      ]
-    },
-    {
-      "id": "Mobile",
-      "data": [
-        { "x": "Jan", "y": 60 },
-        { "x": "Feb", "y": 48 },
-        { "x": "Mar", "y": 177 },
-        { "x": "Apr", "y": 78 },
-        { "x": "May", "y": 96 },
-        { "x": "Jun", "y": 204 }
-      ]
-    }
-  ]
+  {
+    "id": "Low",
+    "data": [
+      { "x": "Low", "y": 43 },
+      { "x": "Medium", "y": 137 }
+    ]
+  },
+  {
+    "id": "Middle Ground",
+    "data": [
+      { "x": "Low", "y": 137 },
+      { "x": "Medium", "y": 96 }
+    ]
+  },
+  {
+    "id": "Most Common",
+    "data": [
+      { "x": "Low", "y": 154 },
+      { "x": "Medium", "y": 204 }
+    ]
+  }
+]

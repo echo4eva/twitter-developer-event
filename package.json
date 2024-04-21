@@ -28,7 +28,8 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "twitter-api-sdk": "^1.2.1",
-    "twitter-api-v2": "^1.16.1"
+    "twitter-api-v2": "^1.16.1",
+    "twitter.js": "^0.14.0"
   },
   "devDependencies": {
     "@types/node": "^20",
