@@ -1,4 +1,5 @@
 import React from 'react';
+import elevatePresence from '../../public/html/elevatePresence.json';
 
 const ElevatePresence: React.FC = () => {
   return (
@@ -7,51 +8,33 @@ const ElevatePresence: React.FC = () => {
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
-              Key Features
+              {elevatePresence.keyFeaturesText}
             </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Elevate Your Twitter Presence</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{elevatePresence.title}</h2>
             <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-              Our robot service agency offers a suite of powerful tools to help you dominate the Twitter landscape.
+              {elevatePresence.description}
             </p>
           </div>
         </div>
         <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
           <div className="flex flex-col justify-center space-y-4">
             <ul className="grid gap-6">
-              <li>
-                <div className="grid gap-1">
-                  <h3 className="text-xl font-bold">Automated Engagement</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Our AI-powered bots will automatically like, comment, and retweet on your behalf, helping you
-                    build a stronger presence.
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div className="grid gap-1">
-                  <h3 className="text-xl font-bold">Targeted Campaigns</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Leverage our data-driven strategies to launch hyper-targeted campaigns and reach your ideal
-                    audience.
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div className="grid gap-1">
-                  <h3 className="text-xl font-bold">Analytics and Reporting</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Monitor your Twitter performance with our comprehensive analytics and reporting tools.
-                  </p>
-                </div>
-              </li>
+              {elevatePresence.features.map((feature, index) => (
+                <li key={index}>
+                  <div className="grid gap-1">
+                    <h3 className="text-xl font-bold">{feature.title}</h3>
+                    <p className="text-gray-500 dark:text-gray-400">{feature.description}</p>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
           <img
             alt="Features"
-            className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-            height="310"
-            src="/image-assets/landing/a-dramatic-portrayal-of-the-twitter-bird-with-its--TIfnrbxARWOMfVCiAo0Esg-GGX1ATF-SSiyRcIsEVcIhQ.jpeg"
-            width="550"
+            className="mx-auto overflow-hidden object-cover object-center sm:w-full lg:order-last"
+            height="100%"
+            src={elevatePresence.imageUrl}
+            width="100%"
           />
         </div>
       </div>

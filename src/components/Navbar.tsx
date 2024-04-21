@@ -1,24 +1,25 @@
 import React from 'react';
 import Link from 'next/link';
 import BotIcon from '@/components/icons/BotIcon';
+import navbarData from '../../public/html/navbar.json';
 
 const Navbar: React.FC = () => {
   return (
-    <div className="px-4 lg:px-6 h-14 flex items-center">
-      <Link className="flex items-center justify-center" href="#">
-        <BotIcon className="h-6 w-6" />
-        <span className="sr-only">Robot Twitter Agency</span>
+    <div className="px-4 lg:px-6 h-20 flex items-center">
+      <Link className="flex items-center justify-center" href="/">
+        <BotIcon className="h-10 w-10" />
+        <span className="sr-only text-xl">{navbarData.logo.altText}</span>
       </Link>
-      <nav className="ml-auto flex gap-4 sm:gap-6">
-        <Link className="text-sm font-medium hover:underline underline-offset-4" href="/twitter">
-          𝕏
-        </Link>
-        <Link className="text-sm font-medium hover:underline underline-offset-4" href="/agents">
-          Agents
-        </Link>
-        <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-          Privacy
-        </Link>
+      <nav className="ml-auto flex gap-8 sm:gap-10">
+        {navbarData.links.map((link, index) => (
+          <Link
+            key={index}
+            className="text-lg font-medium hover:underline underline-offset-4"
+            href={link.href}
+          >
+            {link.label}
+          </Link>
+        ))}
       </nav>
     </div>
   );

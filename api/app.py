@@ -16,8 +16,6 @@ def index():
 # <user> = twitter @ or id? idk
 @app.route('/search/<user>/<term>')
 
-
-
 @app.route("/followers/<user_id>")
 def see_followers(user_id):
   response = get_followers(user_id)
