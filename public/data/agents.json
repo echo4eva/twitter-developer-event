@@ -13,6 +13,7 @@
     "rating": 4.5,
     "tags": "bot management, bot blocking, bot control, bot purge",
     "href": "/agents/thot-bot",
+    "image": "/image-assets/agents/thot-patrol-logo.png",
     "author": "Ebowwa"
   },
   {
@@ -29,6 +30,7 @@
     "rating": 4.2,
     "tags": "twitter marketing, social media growth, automated posting",
     "href": "/agents/marketing-bot",
+    "image": "/image-assets/agents/a-futuristic-3d-render-of-a-marketing-bot-with-a-s-4OBQ7H2YR_Oe8InrcBed-Q-ip8spu9UTcKz2PBwsxfSGA.jpeg",
     "author": "John Doe"
   },
   {
@@ -45,6 +47,7 @@
     "rating": 4.7,
     "tags": "twitter growth, social media engagement, follower growth",
     "href": "agents/engagement-bot",
+    "image": "/image-assets/agents/a-3d-render-of-a-friendly-animated-robot-guy-with--fFVGikGTRY-EW1AC5u-Kaw-tyV4qiZMQPy8JtnUM661Dg.jpeg",
     "author": "Jane Smith"
   },
   {
@@ -61,6 +64,7 @@
     "rating": 4.4,
     "tags": "twitter content curation, social media automation, thought leadership",
     "href": "agents/content-curation-bot",
+    "image": "/image-assets/agents/a-futuristic-and-innovative-3d-render-of-a-content-UkAOiDcYTKuk8NFjoju60w-OxomsM0aSaGDOam2gOJE1g.jpeg",
     "author": "Alex Johnson"
   },
   {
@@ -77,6 +81,7 @@
     "rating": 4.6,
     "tags": "twitter influencer marketing, social media outreach, brand partnerships",
     "href": "agents/influencer-outreach",
+    "image": "/image-assets/agents/influencer-guy.png",
     "author": "Emily Davis"
   }
 ]
