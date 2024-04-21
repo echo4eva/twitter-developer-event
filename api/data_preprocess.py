@@ -2,8 +2,10 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 def preprocess_text(text):
-    # Implement the preprocess_text function here as provided in the previous response.
-    pass
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text
 
 def preprocess_data(descriptions, tweet_texts):
     preprocessed_descriptions = [preprocess_text(text) for text in descriptions]
